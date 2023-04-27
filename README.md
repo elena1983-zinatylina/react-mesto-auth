@@ -41,5 +41,5 @@ Git
 
   
 
-[Ссылка на Проект "mesto-react"](https://elena1983-zinatylina.github.io/mesto-react/)
+[Ссылка на Проект "mesto-react"](https://elena1983-zinatylina.github.io/react-mesto-auth/)
 
