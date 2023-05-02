@@ -49,15 +49,7 @@ class Api {
     })
       .then(res => this._validateQuery(res))
   }
-  // Удаляем лайк
-  // deleteLike(cardId) {
-  //return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-  // method: 'DELETE',
-  // headers: this._headers
-  //// })
-  // .then(res => this._validateQuery(res));
-  //}
-
+ 
   // Получение информации о пользователе с сервера
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
@@ -78,8 +70,6 @@ class Api {
     })
       .then(res => this._validateQuery(res))
   }
-
-
 
   // Редактирование аватара пользователя через попап
   changeAvatar(link) {

@@ -1,7 +1,7 @@
 function Footer() {
     return (
         <footer className="footer">
-            <p className="footer__copyright">&copy; 2022 Зинатулина Елена</p>
+            <p className="footer__copyright"> &#169; {new Date().getFullYear()} Зинатулина Елена</p>
         </footer>
     );
 }
