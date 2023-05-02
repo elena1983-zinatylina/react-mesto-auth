@@ -1,5 +1,5 @@
 import React from 'react';
-import regFail from '../images/reg-fail.svg';
+import regFail from '../images/unsuccess-icon.svg';
 
 function InfoTooltipFail() {
     return (

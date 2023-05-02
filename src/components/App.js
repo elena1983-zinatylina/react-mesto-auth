@@ -13,7 +13,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
 import {Route, Routes, Navigate} from 'react-router-dom';
 import Login from "./Auth";
-import InfoTooltip from "./InfoTooltip";
+import InfoTooltip from "./InfoTooltipSuccess";
 import Register from "./Register";
 import * as auth from '../utils/auth.js';
 import {useNavigate} from 'react-router-dom';
