@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import api from "../utils/Api";
-import { CurrentUserContext } from '../contexts/CurrentUserContext'
-import { CardsContext } from '../contexts/CardsContext'
+import {CurrentUserContext} from '../contexts/CurrentUserContext'
+import {CardsContext} from '../contexts/CardsContext'
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
 import {Route, Routes, Navigate} from 'react-router-dom';
-import Login from "./Auth";
-import InfoTooltip from "./InfoTooltipSuccess";
+import Login from "./Login";
+import InfoTooltip from "./InfoTooltip";
 import Register from "./Register";
 import * as auth from '../utils/auth.js';
 import {useNavigate} from 'react-router-dom';
@@ -23,9 +22,11 @@ function App() {
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [isPopupPictureOpen, setIsPopupPictureOpen] = React.useState(false);
-    const [selectedCard, setSelectedCard] = React.useState({});
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
+    const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
+    const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
     const [currentUser, setCurrentUser] = React.useState({});
-    const [cards, setCards] = React.useState([]);
+    const [cards, setCards] = React.useState({});
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [email, setEmail] = React.useState('');
 
@@ -36,6 +37,7 @@ function App() {
                 setCards(results[1])
             })
             .catch(err => console.log(err))
+            handleTokenCheck();
     }, []);
 
     const handleEditProfileClick = () => {
@@ -173,7 +175,7 @@ function App() {
             <div className="page">
                 <Header email={email} onSignOut={handleSignOut}/>
                 <Routes>
-                    <Route
+                   // <Route
                         path="/"
                         element={loggedIn ? <Navigate to="/main" replace/> : <Navigate to="/sign-in" replace/>}
                     />
@@ -229,7 +231,6 @@ function App() {
                         onOverlayClose={closeAllPopupsByOverlay}
                         isRegisterSuccess={isRegisterSuccess}
                     />  
-                    <PopupWithForm />
                 </div>
             </CurrentUserContext.Provider>
         </CardsContext.Provider>

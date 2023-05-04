@@ -1,5 +1,6 @@
 import React from 'react';
 import headerLogo from '../images/header-logo.svg';
+import { Link, useLocation } from 'react-router-dom';
 
 function Header({ email, onSignOut }) {
     const [headerInfo, setHeaderInfo] = React.useState({});
