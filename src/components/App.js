@@ -65,8 +65,8 @@ function App() {
     };
 
     function handleDeletePlaceClick (card) {
-        setIsDeleteCardPopupOpen(true);
-		isDeleteCardPopupOpen(card);
+        setSelectedCard(card);
+		setIsDeleteCardPopupOpen(true);
 	};
     
 
@@ -80,7 +80,7 @@ function App() {
         setSelectedCard({ name: '', link: '' })
     };
 
-    const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isPopupPictureOpen;
+    const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isPopupPictureOpen || isDeleteCardPopupOpen;
 
     React.useEffect(() => {
         function closeAllPopupsByEscape(evt) {
@@ -114,11 +114,11 @@ function App() {
             });
     }
 
-    const handleCardDelete = (card) => {
+    const handleCardDelete = () => {
       
-        api.deleteCard(card._id)
+        api.deleteCard(selectedCard._id)
             .then(() => {
-                setCards((state) => state.filter((c) => c._id !== card._id));
+                setCards((state) => state.filter((c) => c._id !== selectedCard._id));
                 closeAllPopups();
             })
             .catch(err => console.log(err)); 
@@ -207,7 +207,7 @@ function App() {
                                     onEditAvatar={handleEditAvatarClick}
                                     onCardClick={handleCardClick}
                                     onLikeClick={handleCardLike}
-                                    onDeleteClick={handleCardDelete}
+                                    onDeleteClick={handleDeletePlaceClick }
                                     cards={cards} 
                                 />
                             }
@@ -215,7 +215,7 @@ function App() {
                         <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
                         <Route path="/sign-up" element={<Register handleRegister={handleRegister} />} />
                     </Routes>
-                    <Footer />
+                    <Footer loggedIn={loggedIn} />
                     <EditProfilePopup
                         isOpen={isEditProfilePopupOpen}
                         onButtonClose={closeAllPopups}
@@ -247,7 +247,7 @@ function App() {
                     <DeletedCardPopup
                         isOpen={isDeleteCardPopupOpen}
                         onButtonClose={closeAllPopups}
-                        onDeleteClick={handleDeletePlaceClick}
+                        onDeleteClick={handleCardDelete}
                         isRenderLoading={isRenderLoading}
                         renderLoading={renderLoading}
                     />

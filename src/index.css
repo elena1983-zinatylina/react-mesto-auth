@@ -35,6 +35,7 @@
 @import url("./blocks/popup/popup.css");
 @import url("./blocks/popup/_opened/popup_opened.css");
 @import url("./blocks/popup/__content/popup__content.css");
+@import url("./blocks/popup/__content/__tooltip/popup__content_tooltip.css");
 @import url("./blocks/popup/__close-button/popup__close-button.css");
 @import url("./blocks/popup/__header/popup__header.css");
 @import url("./blocks/popup/__submit-button/popup__submit-button.css");
@@ -51,31 +52,34 @@
 
 @import url("./blocks/place/__likes/place__likes.css");
 
-.tooltip {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 60px 36px;
-    width: 100%;
-    height: 330px;
-    background: #FFFFFF;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
-    box-sizing: border-box;
-}
+
 
 .tooltip__text {
-    font-family: 'Inter', 'Arial', 'Georgia', 'Tahoma', sans-serif;
-    font-style: normal;
-    font-weight: 900;
-    font-size: 24px;
-    line-height: 29px;
-    text-align: center;
-    color: #000000;
-    margin: 32px 0 0;
+  color: #000;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.2;
+  margin: 0;
+  max-width: 330px;
+  margin: 33px 0 0;
+  text-align: center;
 }
 
+
+@media screen and (max-width: 500px){
+  .tooltip__text{
+    font-size: 18px;
+    max-width: 238px;
+  }
+}
+
+@media screen and (max-width: 536px) {
+  .popup__container {
+    max-width: 282px;
+    padding: 25px 22px;
+  }
+}
 .popup__error {
     position: absolute;
     top: calc(100% + 5px);
@@ -99,11 +103,18 @@
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
-    line-height: 22px;
+    line-height: 1.2;;
     color: #FFFFFF;
     text-decoration: none;
-    transition: .2s linear opacity;
-    margin-left: 24px;
+    transition: .3s linear opacity;
+    margin: 0;
+    padding: 10px 0 0 24px;
+}
+
+@media screen and (max-width: 500px){
+.header__link {
+    font-size: 14px;
+}
 }
 
 .header__link:hover {
@@ -111,21 +122,16 @@
 }
 
 .header__info {
-    margin-left: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  align-items: start;
+  display: flex;
+  margin: 0;
+  padding: 0;
 }
 
-@media screen and (max-width: 1024px) {
-    .header__info {
-        padding-right: 27px;
-    }
-}
-
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 500px) {
     .header__info {
         flex-direction: column;
+        align-items: center;
     }
 }
 
@@ -137,13 +143,21 @@
     line-height: 22px;
     color: #FFFFFF;
     margin: 0;
-    padding: 0;
+    padding-top: 10px;
+}
+
+@media screen and (max-width: 550px){
+  .header__email {
+    font-size: 14px;
+    text-align: center;
+  }
 }
 
 .auth {
-    position: relative;
+  display: flex;
     width: 100%;
     max-width: 430px;
+    margin: auto;
   }
 
   .auth__title {
@@ -308,6 +322,7 @@
     flex-direction: column;
     justify-content: space-between;
     box-sizing: border-box;
+   
   }
   
   @media screen and (max-width: 450px) {
@@ -329,3 +344,6 @@
     z-index: 1;
   }
   
+  .footer_invisible {
+    display: none;
+  }

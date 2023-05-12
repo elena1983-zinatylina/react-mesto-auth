@@ -1,6 +1,6 @@
 .header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     margin: 0 auto;
     padding: 0;
     max-width: 880px;
@@ -15,9 +15,10 @@
     }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 500px) {
     .header {
         max-width: 320px;
         padding-top: 28px;
+        flex-direction: column;
     }
 }

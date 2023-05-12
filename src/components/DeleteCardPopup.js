@@ -16,8 +16,9 @@ function DeletedCardPopup(props) {
         title={'Вы уверены?'}
         buttonText={'Да'}
         isOpen={props.isOpen}
+        onButtonClose={props.onButtonClose}
         onSubmit={handleSubmit}
-
+     
       />
     )
   }
