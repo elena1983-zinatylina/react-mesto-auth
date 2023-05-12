@@ -33,13 +33,15 @@ class Api {
   }
 
   // Удаление карточки
-  handleDeleteCard(cardId) {
+  deleteCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: this._headers
     })
-      .then(res => this._validateQuery(res));
+      .then(res => this._validateQuery(res))
   }
+
+
 
   // like/dislike
   changeLike(cardId, isLiked) {

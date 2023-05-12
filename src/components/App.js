@@ -4,18 +4,19 @@ import Main from './Main';
 import Footer from './Footer';
 import ImagePopup from './ImagePopup';
 import api from "../utils/Api";
-import {CurrentUserContext} from '../contexts/CurrentUserContext'
-import {CardsContext} from '../contexts/CardsContext'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
+import { CardsContext } from '../contexts/CardsContext'
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
-import {Route, Routes, Navigate} from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from "./Login";
 import InfoTooltip from "./InfoTooltip";
 import Register from "./Register";
 import * as auth from '../utils/auth.js';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import DeletedCardPopup from './DeleteCardPopup';
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -24,11 +25,13 @@ function App() {
     const [isPopupPictureOpen, setIsPopupPictureOpen] = React.useState(false);
     const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
     const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
-    const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
+    const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [email, setEmail] = React.useState('');
+    const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = React.useState(false);
+    const [isRenderLoading, setIsRenderLoading] = React.useState(false);
 
     React.useEffect(() => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -37,8 +40,12 @@ function App() {
                 setCards(results[1])
             })
             .catch(err => console.log(err))
-            handleTokenCheck();
+        handleTokenCheck();
     }, []);
+
+    function renderLoading() {
+        setIsRenderLoading((isRenderLoading) => !isRenderLoading);
+      };
 
     const handleEditProfileClick = () => {
         setIsEditProfilePopupOpen(true);
@@ -57,13 +64,20 @@ function App() {
         setIsPopupPictureOpen(true);
     };
 
+    function handleDeletePlaceClick (card) {
+        setIsDeleteCardPopupOpen(true);
+		isDeleteCardPopupOpen(card);
+	};
+    
+
     const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
         setIsAddPlacePopupOpen(false);
         setIsPopupPictureOpen(false);
         setIsInfoTooltipOpen(false);
-        setSelectedCard({name: '', link: ''})
+        setIsDeleteCardPopupOpen(false);
+        setSelectedCard({ name: '', link: '' })
     };
 
     const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isPopupPictureOpen;
@@ -101,11 +115,14 @@ function App() {
     }
 
     const handleCardDelete = (card) => {
-        api.handleDeleteCard(card._id)
+      
+        api.deleteCard(card._id)
             .then(() => {
-                setCards(state => state.filter((c) => c._id !== card._id));
+                setCards((state) => state.filter((c) => c._id !== card._id));
+                closeAllPopups();
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err)); 
+            
     }
 
     const handleUpdateUser = (userData) => {
@@ -156,7 +173,7 @@ function App() {
                     if (res) {
                         setLoggedIn(true);
                         setEmail(res.data.email);
-                        navigate("/main", {replace: true})
+                        navigate("/main", { replace: true })
                     }
                 })
                 .catch(err => console.log(err))
@@ -171,33 +188,34 @@ function App() {
 
     return (
         <CardsContext.Provider value={cards}>
-        <CurrentUserContext.Provider value={currentUser}>
-            <div className="page">
-                <Header email={email} onSignOut={handleSignOut}/>
-                <Routes>
+            <CurrentUserContext.Provider value={currentUser}>
+                <div className="page">
+                    <Header email={email} onSignOut={handleSignOut} />
+                    <Routes>
                    // <Route
-                        path="/"
-                        element={loggedIn ? <Navigate to="/main" replace/> : <Navigate to="/sign-in" replace/>}
-                    />
-                    <Route
-                        path="/main"
-                        element={
-                            <ProtectedRoute
-                                element={Main}
-                                loggedIn={loggedIn}
-                                onEditProfile={handleEditProfileClick}
-                                onAddPlace={handleEditPlaceClick}
-                                onEditAvatar={handleEditAvatarClick}
-                                onCardClick={handleCardClick}
-                                onLikeClick={handleCardLike}
-                                onDeleteClick={handleCardDelete}
-                            />
-                        }
-                    />
-                    <Route path="/sign-in" element={<Login handleLogin={handleLogin}/>}/>
-                    <Route path="/sign-up" element={<Register handleRegister={handleRegister}/>}/>
-                </Routes>
-                <Footer/>
+                            path="/"
+                            element={loggedIn ? <Navigate to="/main" replace /> : <Navigate to="/sign-in" replace />}
+                        />
+                        <Route
+                            path="/main"
+                            element={
+                                <ProtectedRoute
+                                    element={Main}
+                                    loggedIn={loggedIn}
+                                    onEditProfile={handleEditProfileClick}
+                                    onAddPlace={handleEditPlaceClick}
+                                    onEditAvatar={handleEditAvatarClick}
+                                    onCardClick={handleCardClick}
+                                    onLikeClick={handleCardLike}
+                                    onDeleteClick={handleCardDelete}
+                                    cards={cards} 
+                                />
+                            }
+                        />
+                        <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
+                        <Route path="/sign-up" element={<Register handleRegister={handleRegister} />} />
+                    </Routes>
+                    <Footer />
                     <EditProfilePopup
                         isOpen={isEditProfilePopupOpen}
                         onButtonClose={closeAllPopups}
@@ -225,12 +243,21 @@ function App() {
                         onButtonClose={closeAllPopups}
                         onOverlayClose={closeAllPopupsByOverlay}
                     />
+
+                    <DeletedCardPopup
+                        isOpen={isDeleteCardPopupOpen}
+                        onButtonClose={closeAllPopups}
+                        onDeleteClick={handleDeletePlaceClick}
+                        isRenderLoading={isRenderLoading}
+                        renderLoading={renderLoading}
+                    />
+
                     <InfoTooltip
                         isOpen={isInfoTooltipOpen}
                         onButtonClose={closeAllPopups}
                         onOverlayClose={closeAllPopupsByOverlay}
                         isRegisterSuccess={isRegisterSuccess}
-                    />  
+                    />
                 </div>
             </CurrentUserContext.Provider>
         </CardsContext.Provider>
