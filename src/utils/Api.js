@@ -41,8 +41,6 @@ class Api {
       .then(res => this._validateQuery(res))
   }
 
-
-
   // like/dislike
   changeLike(cardId, isLiked) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
@@ -51,7 +49,7 @@ class Api {
     })
       .then(res => this._validateQuery(res))
   }
- 
+
   // Получение информации о пользователе с сервера
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {

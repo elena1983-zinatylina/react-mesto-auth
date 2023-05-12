@@ -69,7 +69,6 @@ function App() {
 		setIsDeleteCardPopupOpen(true);
 	};
     
-
     const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false);
         setIsEditAvatarPopupOpen(false);
@@ -121,8 +120,7 @@ function App() {
                 setCards((state) => state.filter((c) => c._id !== selectedCard._id));
                 closeAllPopups();
             })
-            .catch(err => console.log(err)); 
-            
+            .catch(err => console.log(err));   
     }
 
     const handleUpdateUser = (userData) => {
