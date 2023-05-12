@@ -3,10 +3,10 @@
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
-    line-height: 22px;
+    line-height: 1.2;
     color: #FFFFFF;
     margin: 0;
-    padding-top: 10px;
+    padding-bottom: 15px;
 }
 
 @media screen and (max-width: 550px){

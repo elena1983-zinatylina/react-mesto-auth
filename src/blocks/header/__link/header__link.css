@@ -8,12 +8,13 @@
     text-decoration: none;
     transition: .3s linear opacity;
     margin: 0;
-    padding: 10px 0 0 24px;
+    padding: 0px 0 15px 24px;
 }
 
 @media screen and (max-width: 500px){
 .header__link {
     font-size: 14px;
+    padding-bottom: 10px;
 }
 }
 
