@@ -26,7 +26,7 @@ function App() {
     const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
     const [currentUser, setCurrentUser] = React.useState({});
-    const [cards, setCards] = React.useState({});
+    const [cards, setCards] = React.useState([]);
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [email, setEmail] = React.useState('');
 
