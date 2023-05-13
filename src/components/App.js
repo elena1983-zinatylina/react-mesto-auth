@@ -34,6 +34,7 @@ function App() {
     const [isRenderLoading, setIsRenderLoading] = React.useState(false);
 
     React.useEffect(() => {
+        if(loggedIn) {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
             .then(results => {
                 setCurrentUser(results[0]);
@@ -41,7 +42,8 @@ function App() {
             })
             .catch(err => console.log(err))
         handleTokenCheck();
-    }, []);
+        }
+    }, [loggedIn]);
 
     function renderLoading() {
         setIsRenderLoading((isRenderLoading) => !isRenderLoading);
@@ -164,8 +166,9 @@ function App() {
     const navigate = useNavigate();
 
     const handleTokenCheck = () => {
+        const token = localStorage.getItem('token');
         if (localStorage.getItem('token')) {
-            const token = localStorage.getItem('token');
+          
             auth.checkToken(token)
                 .then(res => {
                     if (res) {
@@ -182,7 +185,6 @@ function App() {
         setIsInfoTooltipOpen(true);
         setIsRegisterSuccess(isRegisterSuccess);
     }
-
 
     return (
         <CardsContext.Provider value={cards}>
