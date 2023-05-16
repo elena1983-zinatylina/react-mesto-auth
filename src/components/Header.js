@@ -1,5 +1,6 @@
 import React from 'react';
 import headerLogo from '../images/header-logo.svg';
+
 import { Link, useLocation } from 'react-router-dom';
 
 function Header({ email, onSignOut }) {
@@ -35,14 +36,13 @@ function Header({ email, onSignOut }) {
         }
         setHeaderInfo(headerInfo);
     }, [location]);
+
     return (
         <header className="header">
-             <a href="/" className="header__main-link">
-            <img className="header__logo"
-                src={headerLogo}
-                alt="Логотип сайта Место Россия."/>
-                </a>
-                <div className="header__info">
+            <a href="/" className="header__main-link">
+                <img src={headerLogo} alt="Логотип сайта Место" className="header__logo"/>
+            </a>
+            <div className="header__info">
                 <p className="header__email">
                     {headerInfo.email}
                 </p>
