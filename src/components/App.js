@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate} from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -11,7 +11,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import DeletedCardPopup from './DeleteCardPopup';
-import { CurrentUserContext} from '../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { CardsContext } from '../contexts/CardsContext'
 import api from '../utils/Api';
 import * as auth from '../utils/auth';
@@ -23,13 +23,14 @@ function App() {
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [isPopupPictureOpen, setIsPopupPictureOpen] = React.useState(false);
 
-    const [isInfoTooltipPopup, setIsInfoTooltipPopup] = React.useState(false);
-    const [isRegisterSuccess, setIsRegisterSuccess] = React.useState(false);
+    // стейт infotooltip
+    const [registerSuccess, setRegisterSuccess] = React.useState(false); // open popup
+    const [infoSuccess, setInfoSuccess] = React.useState(true); // упешно или нет прошла регистрация
     const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
     const [currentUser, setCurrentUser] = React.useState({});
     const [cards, setCards] = React.useState([]);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [isSignIn, setIsSignIn] = useState(true);
+    //const [isSignIn, setIsSignIn] = useState(true);
     const [email, setEmail] = React.useState('');
     const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = React.useState(false);
     const [isRenderLoading, setIsRenderLoading] = React.useState(false);
@@ -46,7 +47,7 @@ function App() {
                     setCards(results[1])
                 })
                 .catch(err => console.log(err))
-            openInfoTooltipPopup();
+                checkToken();
         }
     }, [loggedIn]);
 
@@ -76,10 +77,7 @@ function App() {
         setIsDeleteCardPopupOpen(true);
     };
 
-    function openInfoTooltipPopup(isSignIn) {
-        setIsInfoTooltipPopup(true);
-        setIsSignIn(isSignIn);
-    };
+
 
 
     const closeAllPopups = () => {
@@ -87,12 +85,12 @@ function App() {
         setIsEditAvatarPopupOpen(false);
         setIsAddPlacePopupOpen(false);
         setIsPopupPictureOpen(false);
-        setIsInfoTooltipPopup(false);
+        setRegisterSuccess(false)
         setIsDeleteCardPopupOpen(false);
-        setSelectedCard({ })
+        setSelectedCard({})
     };
 
-    const isOpen = isEditAvatarPopupOpen || isInfoTooltipPopup || isEditProfilePopupOpen || isAddPlacePopupOpen || isPopupPictureOpen || isDeleteCardPopupOpen;
+    const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isPopupPictureOpen || isDeleteCardPopupOpen;
 
     React.useEffect(() => {
         function closeAllPopupsByEscape(evt) {
@@ -174,42 +172,42 @@ function App() {
 
 
     const checkToken = () => {
-        const token = localStorage.getItem('jwt');
-
-        if (token) {
-
+        const token = localStorage.getItem('token');
+        if (localStorage.getItem('token')) {
+          
             auth.checkToken(token)
                 .then(res => {
-                    if (res && res.data) {
+                    if (res) {
                         setLoggedIn(true);
-                        setCurrentUser({ ...currentUser, email: res.data.email });
-                        navigate("/main")
+                        setEmail(res.data.email);
+                        navigate("/main", { replace: true })
                     }
                 })
                 .catch(err => console.log(err))
-            openInfoTooltipPopup(false);
         }
     }
 
-    useEffect(() => {
-        checkToken();
-    }, []);
-
-
     /**Зарегистрировать пользователя*/
-    function handleRegister(regData) {
-        auth.register(regData)
+    function handleRegister(password, email) {
+        console.log(password, email);
+        auth.register(password, email)
             .then((res) => {
-                if (res && res.data) {
-                   
-                    navigate('/sign-in');
-                }
+                navigate('/sign-in');
+                setInfoSuccess(true); // статус регистрации
+                return res;
             })
             .catch((err) => {
-                console.log(err); openInfoTooltipPopup(false);
-                
+                setInfoSuccess(false); // статус регистрации
+                console.log(err);
             })
-    };
+            .finally(() => {
+                setRegisterSuccess(true); //открываем попап
+            });
+    }
+
+
+
+
 
     /**Войти в профиль*/
     function handleLogin(loginData) {
@@ -218,12 +216,16 @@ function App() {
                 if (res && res.token) {
                     setCurrentUser({ ...currentUser, email: loginData.email })
                     localStorage.setItem('jwt', res.token);
-                    checkToken();
+                   checkToken();
+                    
                 }
             })
             .catch((err) => {
+                
+                setInfoSuccess(false); // статус регистрации
+                setRegisterSuccess(true); //открываем попап
                 console.log(err);
-                openInfoTooltipPopup(false);
+
             })
     };
 
@@ -238,7 +240,7 @@ function App() {
                         onSignOut={handleSignOut}
                     />
                     <Routes>
-                 
+
                         <Route path='/main'
                             element={<ProtectedRoute
                                 loggedIn={loggedIn}
@@ -296,11 +298,11 @@ function App() {
                     />
 
                     <InfoTooltip
-                        isOpen={isInfoTooltipPopup}
+                        isOpen={registerSuccess}
                         onButtonClose={closeAllPopups}
                         onOverlayClose={closeAllPopupsByOverlay}
-                        //isRegisterSuccess={isRegisterSuccess}
-                        isSignIn={isSignIn}
+                        name="success"
+                        success={infoSuccess}
                     />
                 </div>
             </CurrentUserContext.Provider>
