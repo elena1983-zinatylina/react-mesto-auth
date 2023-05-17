@@ -1,37 +1,63 @@
-import React from 'react';
-import {useNavigate, Link} from 'react-router-dom';
-import * as auth from '../utils/auth.js';
-import Auth from './Auth';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Register = ({ handleRegister }) => {
-    const navigate = useNavigate();
-    const handleSubmit = (email, password) => {
-        if (!email || !password){
-            return;
-        }
-        return auth.register(email, password)
-            .then(() => {
-                navigate('/sign-in', {replace: true});
-                handleRegister(true);
-            })
-            .catch(err => {
-                handleRegister(false)
-                console.log(err)
-            });
+function Register(props) {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    function handleChangeEmail(e) {
+        setEmail(e.target.value);
+    }
+    function handleChangePassword(e) {
+        setPassword(e.target.value);
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        props.handleRegister({ email, password });
     }
 
     return (
-        <Auth
-            onSubmit={handleSubmit}
-            title={'Регистрация'}
-            buttonText={'Зарегестрироваться'}
-        >
-            <div className="auth__option">
-                <p className="auth__option-text">Уже зарегистрированы?&nbsp;</p>
-                <Link to="/sign-in" className="auth__option-link">Войти</Link>
-            </div>
-        </Auth>
-    )
+        <div className="auth">
+            <h3 className="auth__title">
+                Регистрация
+            </h3>
+            <form className="auth__form" onSubmit={handleSubmit}>
+
+                <div className="auth__input-container">
+                    <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        className="auth__input auth__input_kind_email"
+                        placeholder="Email"
+                        required=""
+                        onChange={handleChangeEmail}
+                    />
+                </div>
+                <span className="auth__error email-input-error"></span>
+                <div className="auth__input-container">
+                    <input type="password"
+                        className="auth__input auth__input_kind_password"
+                        name="password"
+                        value={password}
+                        placeholder="Пароль"
+                        minLength="8"
+                        maxLength="50"
+                        required=""
+                        onChange={handleChangePassword}
+                    />
+                    <span className="popup__error about-input-error"></span>
+                </div>
+                <button className="auth__submit-btn">Зарегестрироваться</button>
+            </form>
+            <Link to="/sign-in" className="auth__link">
+                Уже зарегистрированы? Войти
+            </Link>
+        </div>
+
+    );
 }
 
 export default Register;

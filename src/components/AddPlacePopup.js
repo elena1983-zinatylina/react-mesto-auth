@@ -17,7 +17,7 @@ function AddPlacePopup(props) {
     const handleLinkChange = (evt) => {
         setLink(evt.target.value)
     }
-
+    
     const handleSubmit = (evt) => {
         evt.preventDefault();
         props.onAddPlace({ name, link });

@@ -7,25 +7,23 @@ const validateQuery = (res) => {
     return Promise.reject(`Ошибка: ${res.status}`);
 }
 
-export const register = (email, password) => {
+export function register(data) {
     return fetch(`${BASE_URL}/signup`, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     })
         .then(response => validateQuery(response))
 };
-export const authorize = (email, password) => {
+export function authorize  (data)  {
     return fetch(`${BASE_URL}/signin`, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     })
         .then(response => validateQuery(response))
         .then((data) => {
@@ -35,14 +33,13 @@ export const authorize = (email, password) => {
             }
         })
 };
-export const checkToken = (token) => {
+export function checkToken (token) {
     return fetch(`${BASE_URL}/users/me`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        }
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
     })
         .then(res => validateQuery(res))
 }
