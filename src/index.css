@@ -9,6 +9,7 @@
 @import url("./blocks/header/__logo-link/header__logo-link.css");
 @import url("./blocks/header/__email/header__email.css");
 @import url("./blocks/header/__info/header__info.css");
+@import url("./blocks/header/__button-logout/header__button-logout");
 /*profile*/
 @import url("./blocks/profile/profile.css");
 @import url("./blocks/profile/__avatar/profile__avatar.css");
@@ -73,7 +74,13 @@
 @import url("./blocks/auth/__input/_type/_error/auth__input_type_error.css");
 @import url("./blocks/auth/__error/auth__error.css");
 @import url("./blocks/auth/__input-container/auth__input-container.css");
+@import url("./blocks/auth/__link/auth__link.css");
 
 
+
+
+  
+  
+  
 
   

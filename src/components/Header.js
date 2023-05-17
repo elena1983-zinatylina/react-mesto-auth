@@ -1,57 +1,30 @@
 import React from 'react';
 import headerLogo from '../images/header-logo.svg';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Routes, Route } from 'react-router-dom';
 
-function Header({ email, onSignOut }) {
-    const [headerInfo, setHeaderInfo] = React.useState({});
-    const location = useLocation();
+function Header(props) {
+  const { loggedIn, email, singOut } = props;
+  const location = useLocation();
+  const linkText = (location.pathname === '/sign-in') ? 'Регистрация' : 'Войти';
+  const buttonText = loggedIn ? 'Выйти' : linkText;
 
-    const handleLinkClick = () => {
-        if (location.pathname === '/main') {
-            onSignOut();
-        }
-    }
-
-    React.useEffect(() => {
-        let headerInfo = {};
-        if (location.pathname === '/main') {
-            headerInfo = {
-                email: email,
-                link: '/sign-in',
-                linkText: 'Выйти'
-            }
-        } else if (location.pathname === '/sign-up') {
-            headerInfo = {
-                email: '',
-                link: '/sign-in',
-                linkText: 'Войти'
-            }
-        } else if (location.pathname === '/sign-in') {
-            headerInfo = {
-                email: '',
-                link: '/sign-up',
-                linkText: 'Регистрация'
-            }
-        }
-        setHeaderInfo(headerInfo);
-    }, [location]);
-
-    return (
-        <header className="header">
-            <a href="/" className="header__main-link">
-                <img src={headerLogo} alt="Логотип сайта Место" className="header__logo"/>
-            </a>
-            <div className="header__info">
-                <p className="header__email">
-                    {headerInfo.email}
-                </p>
-                <Link className="header__link" to={headerInfo.link} onClick={handleLinkClick}>
-                    {headerInfo.linkText}
-                </Link>
-            </div>
-        </header>
-    );
+  return (
+    <header className="header">
+      <a href="/" className="header__main-link">
+        <img src={headerLogo} alt="Логотип сайта Место" className="header__logo" />
+      </a>
+      <div className="header__info">
+        {loggedIn && <p className="header__email">{email}</p>}
+        <Routes>
+          <Route path='/react-mesto-auth' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
+          <Route path='/sign-up' element={<Link to='/sign-in' className="header__link header__button-logout">Войти</Link>} />
+          <Route path='/sign-in' element={<Link to='/sign-up' className="header__link header__button-logout">Регистрация</Link>} />
+        </Routes>
+        {loggedIn && <a href='/' className="header__link header__button-logout" onClick={singOut}>{buttonText}</a>}
+      </div>
+    </header>
+  );
 }
 
 export default Header;

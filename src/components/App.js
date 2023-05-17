@@ -35,19 +35,19 @@ function App() {
     const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = React.useState(false);
     const [isRenderLoading, setIsRenderLoading] = React.useState(false);
 
-
     const navigate = useNavigate();
-
 
     React.useEffect(() => {
         if (loggedIn) {
             Promise.all([api.getUserInfo(), api.getInitialCards()])
-                .then(results => {
-                    setCurrentUser(results[0]);
-                    setCards(results[1])
+                .then(([data, cards]) => {
+                    setCurrentUser({ ...currentUser, ...data });
+                    setCards(cards);
                 })
-                .catch(err => console.log(err))
-                checkToken();
+                .catch((err) => {
+                    console.log(err);
+                    setRegisterSuccess(false);
+                })
         }
     }, [loggedIn]);
 
@@ -76,9 +76,6 @@ function App() {
         setSelectedCard(card);
         setIsDeleteCardPopupOpen(true);
     };
-
-
-
 
     const closeAllPopups = () => {
         setIsEditProfilePopupOpen(false);
@@ -161,53 +158,45 @@ function App() {
             .catch(err => console.log(err))
     }
 
-
-
     const handleSignOut = () => {
         setLoggedIn(false);
         setEmail('');
-        localStorage.removeItem('token');
+        localStorage.removeItem('jwt')
+        navigate('/sign-in');
     }
 
-
-
-    const checkToken = () => {
-        const token = localStorage.getItem('token');
-        if (localStorage.getItem('token')) {
-          
+    function checkToken() {
+        const token = localStorage.getItem('jwt');
+        if (token) {
             auth.checkToken(token)
-                .then(res => {
-                    if (res) {
+                .then((res) => {
+                    if (res && res.data) {
                         setLoggedIn(true);
-                        setEmail(res.data.email);
-                        navigate("/main", { replace: true })
+                        setCurrentUser({ ...currentUser, email: res.data.email });
+                        navigate('/');
                     }
                 })
-                .catch(err => console.log(err))
+                .catch((err) => {
+                    console.log(err);
+                    setRegisterSuccess(false);
+                })
         }
-    }
+    };
 
     /**Зарегистрировать пользователя*/
-    function handleRegister(password, email) {
-        console.log(password, email);
-        auth.register(password, email)
+    function handleRegister(regData) {
+        auth.register(regData)
             .then((res) => {
-                navigate('/sign-in');
-                setInfoSuccess(true); // статус регистрации
-                return res;
+                if (res && res.data) {
+                    setRegisterSuccess(true);
+                    navigate('/sign-in');
+                }
             })
             .catch((err) => {
-                setInfoSuccess(false); // статус регистрации
                 console.log(err);
+                setRegisterSuccess(false);
             })
-            .finally(() => {
-                setRegisterSuccess(true); //открываем попап
-            });
-    }
-
-
-
-
+    };
 
     /**Войти в профиль*/
     function handleLogin(loginData) {
@@ -216,19 +205,15 @@ function App() {
                 if (res && res.token) {
                     setCurrentUser({ ...currentUser, email: loginData.email })
                     localStorage.setItem('jwt', res.token);
-                   checkToken();
-                    
+                    checkToken();
                 }
             })
             .catch((err) => {
-                
                 setInfoSuccess(false); // статус регистрации
                 setRegisterSuccess(true); //открываем попап
                 console.log(err);
-
             })
     };
-
 
     return (
         <CardsContext.Provider value={cards}>
@@ -237,11 +222,10 @@ function App() {
                     <Header
                         email={currentUser.email}
                         loggedIn={loggedIn}
-                        onSignOut={handleSignOut}
+                        singOut={handleSignOut}
                     />
                     <Routes>
-
-                        <Route path='/main'
+                        <Route path='/'
                             element={<ProtectedRoute
                                 loggedIn={loggedIn}
                                 element={Main}
