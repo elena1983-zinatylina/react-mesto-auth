@@ -178,7 +178,7 @@ function App() {
                 })
                 .catch((err) => {
                     console.log(err);
-                    setRegisterSuccess(false);
+                    
                 })
         }
     };
@@ -187,15 +187,18 @@ function App() {
     function handleRegister(regData) {
         auth.register(regData)
             .then((res) => {
-                if (res && res.data) {
-                    setRegisterSuccess(true);
+               
                     navigate('/sign-in');
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                setRegisterSuccess(false);
-            })
+                    setInfoSuccess(true); // статус регистрации
+                    return res;
+                })
+                .catch((err) => {
+                    setInfoSuccess(false); // статус регистрации
+                    console.log(err); 
+                })
+                .finally(() => {
+                    setRegisterSuccess(true); //открываем попап
+                });
     };
 
     /**Войти в профиль*/
@@ -209,8 +212,7 @@ function App() {
                 }
             })
             .catch((err) => {
-                setInfoSuccess(false); // статус регистрации
-                setRegisterSuccess(true); //открываем попап
+                setRegisterSuccess(false);
                 console.log(err);
             })
     };
