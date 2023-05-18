@@ -212,7 +212,8 @@ function App() {
                 }
             })
             .catch((err) => {
-                setRegisterSuccess(false);
+                setInfoSuccess(false); // статус регистрации
+                setRegisterSuccess(true); //открываем попап
                 console.log(err);
             })
     };
