@@ -49,6 +49,7 @@ function App() {
                     setRegisterSuccess(false);
                 })
         }
+        checkToken();
     }, [loggedIn]);
 
     function renderLoading() {
@@ -208,7 +209,7 @@ function App() {
                 if (res && res.token) {
                     setCurrentUser({ ...currentUser, email: loginData.email })
                     localStorage.setItem('jwt', res.token);
-                    checkToken();
+                    setLoggedIn(true);
                 }
             })
             .catch((err) => {
